@@ -5,7 +5,7 @@ Created on Mon Apr 13 19:50:58 2015
 @author: josephdziados
 """
 import urllib2
-#import re
+import re
 from bs4 import BeautifulSoup
 #import string
 
@@ -31,14 +31,14 @@ def build_top_index(soup, to_search, beg_url):
     
     return index[:end_index]
     
-def build_sub_index(soup, to_search, to_count, beg_url):
+def build_sub_index(soup, search_one, search_two, beg_url):
     """
     builds an index from a soup object with a search and count string
     """
     index = []
     
     for a in soup.find_all('a', href=True):
-        if a['href'].startswith(to_search) and a['href'].count(to_count) >= 1:
+        if a['href'].startswith(search_one) and re.search(search_two, a['href']) != None:
             index.append(beg_url + a['href'])
     end_index = len(index) / 2
     
@@ -55,7 +55,7 @@ def build_single_movie_url_list(total_urls, box_url):
     for full_site in total_urls:
         soup = build_soup_page(full_site)
         for a in soup.find_all('a', href=True):
-            if a['href'].count('id') >= 1 and a['href'] != '/movies/?id=fast7.htm':
+            if re.search('id', a['href']) != None and a['href'] != '/movies/?id=fast7.htm':
                 single_movie_url_tags.append(box_url + a['href'])
     single_movie_url_tags.append(box_url + '/movies/?id=fast7.htm')
     
